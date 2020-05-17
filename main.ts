@@ -1,27 +1,13 @@
-import restify from 'restify';
+import {Server} from './server/server';
 
-// Server create
-const server = restify.createServer({
-    name: "meat-api",
-    version: "1.0.0"
-});
-
-// Config query params parser
-server.use(restify.plugins.queryParser());
-
-// Register a route
-server.get('/info', (req, res, next) => {
-    res.json({
-        browser: req.userAgent(),
-        method: req.method,
-        url: req.url,
-        path: req.path(),
-        query: req.query,
+const server = new Server();
+server.bootstrap()
+    .then(server => {
+        console.log('Server is listening on: ', 
+        (server.application && server.application.address()));
+    })
+    .catch(error => {
+        console.log('Server failed to start');
+        console.log(error);
+        process.exit(1);
     });
-    return next();
-});
-
-// Server listen port
-server.listen(3000, () => {
-    console.log('API is running on http://localhost:3000');
-});
