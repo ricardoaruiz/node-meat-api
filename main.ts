@@ -6,9 +6,18 @@ const server = restify.createServer({
     version: "1.0.0"
 });
 
+// Config query params parser
+server.use(restify.plugins.queryParser());
+
 // Register a route
-server.get('/hello', (req, res, next) => {
-    res.json({message: 'hello'});
+server.get('/info', (req, res, next) => {
+    res.json({
+        browser: req.userAgent(),
+        method: req.method,
+        url: req.url,
+        path: req.path(),
+        query: req.query,
+    });
     return next();
 });
 
