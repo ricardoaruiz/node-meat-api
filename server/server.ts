@@ -1,9 +1,13 @@
-import { environment } from './../common/environments';
 import restify from 'restify';
 
-export class Server {
+import Route from '../common/route';
+import environment from '../common/environment';
+
+export default class Server {
 
     application: restify.Server | undefined;
+
+    constructor(private routers: Route[] = []) { }
 
     bootstrap(): Promise<Server> {
         return this.initServer()
@@ -14,10 +18,8 @@ export class Server {
         return new Promise((resolve, reject) => {
             try {
                 this.application = this.createServer();
-                this.setPlugins(this.application);
-                this.createInfoRoute(this.application);
-
-                // Server listen port
+                this.setPlugins(this.application);                
+                this.createRoutes(this.application);
                 this.application.listen(environment.server.port, () => {
                     resolve(this.application);
                 });
@@ -38,17 +40,9 @@ export class Server {
         server.use(restify.plugins.queryParser());
     }
 
-    private createInfoRoute(server: restify.Server): void {
-        server.get('/info', (req, res, next) => {
-            res.json({
-                browser: req.userAgent(),
-                method: req.method,
-                url: req.url,
-                path: req.path(),
-                query: req.query,
-            });
-            return next();
-        });
+    private createRoutes(server: restify.Server): void {
+        if (this.routers) {
+            this.routers.forEach(route => route.applyRoutes(server));
+        }
     }
-
 }
