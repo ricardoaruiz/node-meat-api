@@ -8,6 +8,7 @@ const BASE_RESOURCE = "/users";
 class UserRoutes extends Route {   
     applyRoutes(application: restify.Server): void {
         this.findAll(application);
+        this.load(application);
     }
 
     /**
@@ -21,6 +22,20 @@ class UserRoutes extends Route {
                     res.json(users);
                     return next();
                 })
+        })
+    }
+
+    load(application: restify.Server): void {
+        application.get(`${BASE_RESOURCE}/:id`, (req, res, next) => {
+            User.findById(req.params.id)
+                .then(user => {
+                    if (user) {
+                        res.json(user)
+                        return next();
+                    }
+                    res.send(404);
+                    return next();
+                });
         })
     }
 }

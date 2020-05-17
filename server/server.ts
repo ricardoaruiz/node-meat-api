@@ -38,6 +38,7 @@ export default class Server {
 
     private setPlugins(server: restify.Server): void {
         server.use(restify.plugins.queryParser());
+        
     }
 
     private createRoutes(server: restify.Server): void {
