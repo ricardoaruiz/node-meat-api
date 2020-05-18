@@ -74,7 +74,7 @@ class UserRoutes extends Route {
                         res.send(404);
                     }
                 })
-                .then((user: UserDocument) => {
+                .then((user: any) => {
                     res.json(user);
                     return next();
                 });

@@ -12,11 +12,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "mongoose": "4.13.9",
+    "mongoose": "^5.9.14",
     "restify": "6.3.4"
   },
   "devDependencies": {
-    "@types/mongoose": "4.7.32",
+    "@types/mongoose": "^5.7.20",
     "@types/restify": "5.0.6"
   }
 }

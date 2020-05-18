@@ -17,10 +17,12 @@ export default class Server {
             
     }
 
-    private initializeDb(): mongoose.MongooseThenable {
+    private initializeDb(): Promise<typeof mongoose> {
         mongoose.Promise = global.Promise;
         return mongoose.connect(environment.db.url, {
-            useMongoClient: true
+            // useMongoClient: true,
+            useNewUrlParser: true,
+            useUnifiedTopology: true
         });
     }
 
