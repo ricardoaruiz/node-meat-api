@@ -48,6 +48,7 @@ export default class Server {
 
     private setPlugins(server: restify.Server): void {
         server.use(restify.plugins.queryParser());
+        server.use(restify.plugins.bodyParser());
         
     }
 

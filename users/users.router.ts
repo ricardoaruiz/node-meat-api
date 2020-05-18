@@ -9,6 +9,7 @@ class UserRoutes extends Route {
     applyRoutes(application: restify.Server): void {
         this.findAll(application);
         this.load(application);
+        this.create(application);
     }
 
     /**
@@ -36,6 +37,19 @@ class UserRoutes extends Route {
                     res.send(404);
                     return next();
                 });
+        })
+    }
+
+    create(application: restify.Server): void {
+        application.post(BASE_RESOURCE, (req, res, next) => {
+            const user = new User(req.body);
+            user.save()
+                .then(user => {
+                    user.password = '';
+                    res.json(user)
+                    return next();
+                })
+
         })
     }
 }
