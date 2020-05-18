@@ -1,4 +1,5 @@
 import restify from 'restify';
+import mongoose, { mongo } from 'mongoose';
 
 import Route from '../common/route';
 import environment from '../common/environment';
@@ -10,8 +11,17 @@ export default class Server {
     constructor(private routers: Route[] = []) { }
 
     bootstrap(): Promise<Server> {
-        return this.initServer()
-            .then(() => this);
+        return this.initializeDb()
+                .then(() => this.initServer()
+                                .then(() => this));
+            
+    }
+
+    private initializeDb(): mongoose.MongooseThenable {
+        mongoose.Promise = global.Promise;
+        return mongoose.connect(environment.db.url, {
+            useMongoClient: true
+        });
     }
 
     private initServer(): Promise<restify.Server> {
