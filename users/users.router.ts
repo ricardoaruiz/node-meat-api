@@ -1,4 +1,4 @@
-import restify from 'restify';
+import restify, { Request, Response, Next } from 'restify';
 
 import Route from '../common/route';
 import User, { UserDocument } from './users.model';
@@ -12,6 +12,7 @@ class UserRoutes extends Route {
         this.create(application);
         this.update(application);
         this.partialUpdate(application);
+        this.delete(application);
     }
 
     /**
@@ -19,7 +20,7 @@ class UserRoutes extends Route {
      * @param application 
      */
     findAll(application: restify.Server): void {
-        application.get(BASE_RESOURCE, (req, res, next) => {
+        application.get(BASE_RESOURCE, (req: Request, res: Response, next: Next) => {
             User.find()
                 .then(users => {
                     res.json(users);
@@ -33,7 +34,7 @@ class UserRoutes extends Route {
      * @param application 
      */
     load(application: restify.Server): void {
-        application.get(`${BASE_RESOURCE}/:id`, (req, res, next) => {
+        application.get(`${BASE_RESOURCE}/:id`, (req: Request, res: Response, next: Next) => {
             User.findById(req.params.id)
                 .then(user => {
                     if (user) {
@@ -51,7 +52,7 @@ class UserRoutes extends Route {
      * @param application 
      */
     create(application: restify.Server): void {
-        application.post(BASE_RESOURCE, (req, res, next) => {
+        application.post(BASE_RESOURCE, (req: Request, res: Response, next: Next) => {
             const user = new User(req.body);
             user.save()
                 .then(user => {
@@ -63,9 +64,12 @@ class UserRoutes extends Route {
         });
     }
 
+    /**
+     * Update full resource
+     * @param application 
+     */
     update(application: restify.Server): void {
-        application.put(`${BASE_RESOURCE}/:id`, (req, res, next) => {
-           
+        application.put(`${BASE_RESOURCE}/:id`, (req: Request, res: Response, next: Next) => {           
             const options = { overwrite: true };
 
             User.update({ _id: req.params.id }, req.body, options)
@@ -84,8 +88,12 @@ class UserRoutes extends Route {
         });
     }
 
+    /**
+     * Update parcial resource
+     * @param application 
+     */
     partialUpdate(application: restify.Server): void {
-        application.patch(`${BASE_RESOURCE}/:id`, (req, res, next) => {
+        application.patch(`${BASE_RESOURCE}/:id`, (req: Request, res: Response, next: Next) => {
 
             const options = { new: true };
 
@@ -100,6 +108,26 @@ class UserRoutes extends Route {
                     }
                 });
         });
+    }
+
+    /**
+     * Remove a resource
+     * @param application 
+     */
+    delete(application: restify.Server): void {
+        application.del(`${BASE_RESOURCE}/:id`, (req: Request, res: Response, next: Next) => {
+            User.findByIdAndDelete(req.params.id)
+                .then(user => {
+                    if(user) {
+                        res.status(200);
+                        res.json(user);
+                        return next();
+                    } else {
+                        res.send(404);
+                        return next();
+                    }
+                })
+        })
     }
 }
 
