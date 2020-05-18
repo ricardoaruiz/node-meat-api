@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 
 import Route from '../common/route';
 import environment from '../common/environment';
+import { mergePatchBodyParser } from './merge-patch.parser';
 
 export default class Server {
 
@@ -51,6 +52,7 @@ export default class Server {
     private setPlugins(server: restify.Server): void {
         server.use(restify.plugins.queryParser());
         server.use(restify.plugins.bodyParser());
+        server.use(mergePatchBodyParser);
         
     }
 

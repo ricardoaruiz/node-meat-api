@@ -11,6 +11,7 @@ class UserRoutes extends Route {
         this.load(application);
         this.create(application);
         this.update(application);
+        this.partialUpdate(application);
     }
 
     /**
@@ -64,7 +65,9 @@ class UserRoutes extends Route {
 
     update(application: restify.Server): void {
         application.put(`${BASE_RESOURCE}/:id`, (req, res, next) => {
+           
             const options = { overwrite: true };
+
             User.update({ _id: req.params.id }, req.body, options)
                 .exec()
                 .then(result => {
@@ -77,6 +80,24 @@ class UserRoutes extends Route {
                 .then((user: any) => {
                     res.json(user);
                     return next();
+                });
+        });
+    }
+
+    partialUpdate(application: restify.Server): void {
+        application.patch(`${BASE_RESOURCE}/:id`, (req, res, next) => {
+
+            const options = { new: true };
+
+            User.findByIdAndUpdate(req.params.id, req.body, options)
+                .then(user => {
+                    if (user) {
+                        res.json(user);
+                        return next();
+                    } else {
+                        res.send(404);
+                        return next();
+                    }
                 });
         });
     }
