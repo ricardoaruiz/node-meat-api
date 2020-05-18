@@ -1,14 +1,17 @@
 import restify, { Request, Response, Next } from 'restify';
 
 import Route from '../common/route';
-import User, { UserDocument } from './users.model';
+import UserService from './user.service';
 
 const BASE_RESOURCE = "/users";
 
 class UserRoutes extends Route {  
     
+    userService = new UserService();
+
     constructor() {
         super();
+
         this.on('beforeRender', document => {
             document.password = undefined;
         })
@@ -29,7 +32,8 @@ class UserRoutes extends Route {
      */
     findAll(application: restify.Server): void {
         application.get(BASE_RESOURCE, (req: Request, res: Response, next: Next) => {
-            User.find().then(this.render(res, next));
+            this.userService.find()
+                .then(this.render(res, next));
         });
     }
 
@@ -39,7 +43,8 @@ class UserRoutes extends Route {
      */
     load(application: restify.Server): void {
         application.get(`${BASE_RESOURCE}/:id`, (req: Request, res: Response, next: Next) => {
-            User.findById(req.params.id).then(this.render(res, next));
+            this.userService.findById(req.params.id)
+                .then(this.render(res, next));
         });
     }
 
@@ -49,8 +54,8 @@ class UserRoutes extends Route {
      */
     create(application: restify.Server): void {
         application.post(BASE_RESOURCE, (req: Request, res: Response, next: Next) => {
-            const user = new User(req.body);
-            user.save().then(this.render(res, next));
+            this.userService.create(req.body)
+                .then(this.render(res, next));
 
         });
     }
@@ -60,18 +65,15 @@ class UserRoutes extends Route {
      * @param application 
      */
     update(application: restify.Server): void {
-        application.put(`${BASE_RESOURCE}/:id`, (req: Request, res: Response, next: Next) => {           
-            const options = { overwrite: true };
-
-            User.update({ _id: req.params.id }, req.body, options)
-                .exec()
+        application.put(`${BASE_RESOURCE}/:id`, (req: Request, res: Response, next: Next) => {
+            this.userService.update(req.params.id, req.body)
                 .then(result => {
                     if(result.n) {
-                        return User.findById(req.params.id);
+                        return this.userService.findById(req.params.id);
                     } else {
                         res.send(404);
                     }
-                })
+                })            
                 .then(this.render(res, next));
         });
     }
@@ -82,10 +84,7 @@ class UserRoutes extends Route {
      */
     partialUpdate(application: restify.Server): void {
         application.patch(`${BASE_RESOURCE}/:id`, (req: Request, res: Response, next: Next) => {
-
-            const options = { new: true };
-
-            User.findByIdAndUpdate(req.params.id, req.body, options)
+            this.userService.partialUpdate(req.params.id, req.body)
                 .then(this.render(res, next));
         });
     }
@@ -96,7 +95,7 @@ class UserRoutes extends Route {
      */
     delete(application: restify.Server): void {
         application.del(`${BASE_RESOURCE}/:id`, (req: Request, res: Response, next: Next) => {
-            User.findByIdAndDelete(req.params.id)
+            this.userService.delete(req.params.id)
                 .then(user => {
                     if(user) {
                         res.status(200);
