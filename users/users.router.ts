@@ -17,7 +17,7 @@ class UserRoutes extends Route {
      */
     findAll(application: restify.Server): void {
         application.get(BASE_RESOURCE, (req, res, next) => {
-            User.findAll()
+            User.find()
                 .then(users => {
                     res.json(users);
                     return next();

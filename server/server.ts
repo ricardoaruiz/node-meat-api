@@ -1,5 +1,5 @@
 import restify from 'restify';
-import mongoose, { mongo } from 'mongoose';
+import mongoose from 'mongoose';
 
 import Route from '../common/route';
 import environment from '../common/environment';
