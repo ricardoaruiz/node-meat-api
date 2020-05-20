@@ -4,12 +4,15 @@ import mongoose from 'mongoose';
 import Route from '../common/route';
 import environment from '../common/environment';
 import { mergePatchBodyParser } from './merge-patch.parser';
+import { handleError } from './error.handler';
 
 export default class Server {
 
-    application: restify.Server | undefined;
+    application: restify.Server;
 
-    constructor(private routers: Route[] = []) { }
+    constructor(private routers: Route[] = []) {
+        this.application = this.createServer();
+    }
 
     bootstrap(): Promise<Server> {
         return this.initializeDb()
@@ -21,7 +24,6 @@ export default class Server {
     private initializeDb(): Promise<typeof mongoose> {
         mongoose.Promise = global.Promise;
         return mongoose.connect(environment.db.url, {
-            // useMongoClient: true,
             useNewUrlParser: true,
             useUnifiedTopology: true
         });
@@ -30,9 +32,9 @@ export default class Server {
     private initServer(): Promise<restify.Server> {
         return new Promise((resolve, reject) => {
             try {
-                this.application = this.createServer();
-                this.setPlugins(this.application);                
-                this.createRoutes(this.application);
+                this.setPlugins();
+                this.createRoutes();
+                this.listenRestifyErrors()
                 this.application.listen(environment.server.port, () => {
                     resolve(this.application);
                 });
@@ -49,16 +51,20 @@ export default class Server {
         });
     }
 
-    private setPlugins(server: restify.Server): void {
-        server.use(restify.plugins.queryParser());
-        server.use(restify.plugins.bodyParser());
-        server.use(mergePatchBodyParser);
+    private setPlugins(): void {
+        this.application.use(restify.plugins.queryParser());
+        this.application.use(restify.plugins.bodyParser());
+        this.application.use(mergePatchBodyParser);
         
     }
 
-    private createRoutes(server: restify.Server): void {
+    private createRoutes(): void {
         if (this.routers) {
-            this.routers.forEach(route => route.applyRoutes(server));
+            this.routers.forEach(route => route.applyRoutes(this.application));
         }
+    }
+
+    private listenRestifyErrors(): void {
+        this.application.on('restifyError', handleError);
     }
 }

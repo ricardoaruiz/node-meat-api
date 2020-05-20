@@ -1,4 +1,5 @@
 import restify, { Request, Response, Next } from 'restify';
+import { NotFoundError } from 'restify-errors';
 
 import Route from '../common/route';
 import UserService from './user.service';
@@ -33,7 +34,8 @@ class UserRoutes extends Route {
     findAll(application: restify.Server): void {
         application.get(BASE_RESOURCE, (req: Request, res: Response, next: Next) => {
             this.userService.find()
-                .then(this.render(res, next));
+                .then(this.render(res, next))
+                .catch(next);
         });
     }
 
@@ -44,7 +46,8 @@ class UserRoutes extends Route {
     load(application: restify.Server): void {
         application.get(`${BASE_RESOURCE}/:id`, (req: Request, res: Response, next: Next) => {
             this.userService.findById(req.params.id)
-                .then(this.render(res, next));
+                .then(this.render(res, next))
+                .catch(next);
         });
     }
 
@@ -55,7 +58,8 @@ class UserRoutes extends Route {
     create(application: restify.Server): void {
         application.post(BASE_RESOURCE, (req: Request, res: Response, next: Next) => {
             this.userService.create(req.body)
-                .then(this.render(res, next));
+                .then(this.render(res, next))
+                .catch(next);
 
         });
     }
@@ -71,10 +75,11 @@ class UserRoutes extends Route {
                     if(result.n) {
                         return this.userService.findById(req.params.id);
                     } else {
-                        res.send(404);
+                        throw new NotFoundError('Documento não encontrado');
                     }
                 })            
-                .then(this.render(res, next));
+                .then(this.render(res, next))
+                .catch(next);
         });
     }
 
@@ -85,7 +90,8 @@ class UserRoutes extends Route {
     partialUpdate(application: restify.Server): void {
         application.patch(`${BASE_RESOURCE}/:id`, (req: Request, res: Response, next: Next) => {
             this.userService.partialUpdate(req.params.id, req.body)
-                .then(this.render(res, next));
+                .then(this.render(res, next))
+                .catch(next);
         });
     }
 
@@ -100,12 +106,12 @@ class UserRoutes extends Route {
                     if(user) {
                         res.status(200);
                         res.json(user);
-                        return next();
                     } else {
-                        res.send(404);
-                        return next();
+                        throw new NotFoundError('Documento não encontrado');
                     }
+                    return next();
                 })
+                .catch(next);
         })
     }
 }
