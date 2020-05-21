@@ -13,11 +13,18 @@ class UserRoutes extends Route {
     constructor() {
         super();
 
+        /**
+         * Antes de exibir um documento User atribui undefined para o password
+         */
         this.on('beforeRender', document => {
             document.password = undefined;
         })
     }
 
+    /**
+     * Aplica as rotas na aplicação
+     * @param application 
+     */
     applyRoutes(application: restify.Server): void {
         this.findAll(application);
         this.load(application);
@@ -71,15 +78,8 @@ class UserRoutes extends Route {
     update(application: restify.Server): void {
         application.put(`${BASE_RESOURCE}/:id`, (req: Request, res: Response, next: Next) => {
             this.userService.update(req.params.id, req.body)
-                .then(result => {
-                    if(result.n) {
-                        return this.userService.findById(req.params.id);
-                    } else {
-                        throw new NotFoundError('Documento não encontrado');
-                    }
-                })            
                 .then(this.render(res, next))
-                .catch(next);
+                .catch(next);            
         });
     }
 
@@ -89,7 +89,7 @@ class UserRoutes extends Route {
      */
     partialUpdate(application: restify.Server): void {
         application.patch(`${BASE_RESOURCE}/:id`, (req: Request, res: Response, next: Next) => {
-            this.userService.partialUpdate(req.params.id, req.body)
+            this.userService.update(req.params.id, req.body, false)
                 .then(this.render(res, next))
                 .catch(next);
         });

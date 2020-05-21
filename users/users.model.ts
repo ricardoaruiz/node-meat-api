@@ -42,6 +42,11 @@ const userSchema = new mongoose.Schema({
     }
 });
 
+/**
+ * Criptografa a senha do usuário
+ * @param obj 
+ * @param next 
+ */
 const hashPassword = (obj: any, next: any) => {
     crypto(obj.password)
     .then(hash => {

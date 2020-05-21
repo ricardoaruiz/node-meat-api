@@ -13,7 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^4.0.1",
-    "mongoose": "4.13.9",
+    "mongoose": "4.13.20",
     "restify": "6.3.4",
     "restify-errors": "^8.0.2"
   },
