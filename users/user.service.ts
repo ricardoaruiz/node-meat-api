@@ -26,7 +26,7 @@ export default class UserService {
     }
 
     delete(id: number): DocumentQuery<UserDocument | null, UserDocument, {}> {
-        return User.findByIdAndDelete(id);
+        return User.findByIdAndRemove(id);
     }
 
 }

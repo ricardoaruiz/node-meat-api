@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import { validateCPF } from '../common/validators'
+import crypto from '../common/crypto';
 
 export interface UserDocument extends mongoose.Document {
     name: string,
@@ -40,6 +41,25 @@ const userSchema = new mongoose.Schema({
         }
     }
 });
+
+// Mongoose middleware.
+// Esse middleware será executado imediatamente antes da inclusão de um documento
+// do tipo UserDocument e fará a criptografia da senha
+// Não usar arrow function pois precisamos da referência de this do documento
+userSchema.pre('save', function (next) {
+    const user: any = this;
+    
+    if(!user.isModified('password')) {
+        next();
+    } else {
+        crypto(user.password)
+            .then(hash => {
+                user.password = hash;
+                next();
+            })
+            .catch(next);
+    }
+})
 
 // Create and export model
 const User = mongoose.model<UserDocument>('User', userSchema);
