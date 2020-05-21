@@ -42,24 +42,41 @@ const userSchema = new mongoose.Schema({
     }
 });
 
-// Mongoose middleware.
-// Esse middleware será executado imediatamente antes da inclusão de um documento
-// do tipo UserDocument e fará a criptografia da senha
+const hashPassword = (obj: any, next: any) => {
+    crypto(obj.password)
+    .then(hash => {
+        obj.password = hash;
+        next();
+    })
+    .catch(next);
+}
+
 // Não usar arrow function pois precisamos da referência de this do documento
-userSchema.pre('save', function (next) {
-    const user: any = this;
-    
+// Nesse caso this é referência para o documento
+const saveMiddleware = function(this: any, next: any) {
+    const user: UserDocument = this;
+
     if(!user.isModified('password')) {
         next();
     } else {
-        crypto(user.password)
-            .then(hash => {
-                user.password = hash;
-                next();
-            })
-            .catch(next);
+        hashPassword(user, next);
     }
-})
+};
+
+// Não user arrow function pois precisamos da referência de this da query em questão
+// Nesse caso this é referência para a query
+const updateMiddleware = function (this: any, next: any) {  
+    if(!this.getUpdate().password) {
+        next();
+    } else {
+        hashPassword(this.getUpdate(), next);
+    }
+}
+
+// Mongoose middlewares.
+userSchema.pre('save', saveMiddleware);
+userSchema.pre('update', updateMiddleware);
+userSchema.pre('findOneAndUpdate', updateMiddleware);
 
 // Create and export model
 const User = mongoose.model<UserDocument>('User', userSchema);

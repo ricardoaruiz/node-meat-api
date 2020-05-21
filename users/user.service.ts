@@ -16,12 +16,12 @@ export default class UserService {
     }
 
     update(id: number, user: UserDocument): Promise<any> {
-        const options = { overwrite: true };
+        const options = { runValidators: true, overwrite: true };
         return User.update({ _id: id }, user, options).exec();
     }
 
     partialUpdate(id: number, user: UserDocument): Query<any> {
-        const options = { new: true };
+        const options = { runValidators: true, new: true };
         return User.findByIdAndUpdate(id, user, options);
     }
 

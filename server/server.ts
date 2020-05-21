@@ -22,14 +22,14 @@ export default class Server {
     }
 
     private initializeDb(): Promise<typeof mongoose> {
-        mongoose.Promise = global.Promise;
-        return mongoose.connect(environment.db.url, {
-            useMongoClient: true
-        });        
+        // mongoose.Promise = global.Promise;
         // return mongoose.connect(environment.db.url, {
-        //     useNewUrlParser: true,
-        //     useUnifiedTopology: true
-        // });
+        //     useMongoClient: true
+        // });        
+        return mongoose.connect(environment.db.url, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        });
     }
 
     private initServer(): Promise<restify.Server> {
@@ -57,7 +57,7 @@ export default class Server {
     private setPlugins(): void {
         this.application.use(restify.plugins.queryParser());
         this.application.use(restify.plugins.bodyParser());
-        this.application.use(mergePatchBodyParser);
+        //this.application.use(mergePatchBodyParser);
         
     }
 
