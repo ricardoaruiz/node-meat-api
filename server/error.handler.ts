@@ -1,30 +1,34 @@
 import { Request, Response } from 'restify';
-import { DefinedHttpError } from 'restify-errors';
 
-export const handleError = (req: Request, res: Response, err: DefinedHttpError, done: any) => {
-    overrideError(err);
+export const handleError = (req: Request, res: Response, err: any, done: any) => {
     handle(err);
-    done();
+    return done();
 }
 
-const overrideError = (err: DefinedHttpError) => { 
-    err.toJSON = () => {
-        return {
-            message: err.message
-        }
-    }
-}
-
-const handle = (err: DefinedHttpError) => {
+const handle = (err: any) => {
     switch (err.name) {
         case 'MongoError':
             if(err.code === '11000') {
                 err.statusCode = 400;   
             }
+            err.toJSON = () => {
+                return {
+                    message: err.message
+                }
+            }            
             break;
         case 'ValidationError':
             err.statusCode = 400;
-            break;    
+            const messages: any[] = [];
+            for(let name in err.errors) {
+                messages.push({ message: err.errors[name].message})
+            }
+            err.toJSON = () => {
+                return {
+                    errors: messages
+                }
+            }
+            break;
         default:
             break;
     }
