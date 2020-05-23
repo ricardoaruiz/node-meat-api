@@ -1,0 +1,323 @@
+{
+	"info": {
+		"_postman_id": "9ccefd47-4a45-42c0-988c-670114466f75",
+		"name": "Meat API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Users - List All",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/users/",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"users",
+								""
+							]
+						},
+						"description": "Listagem de todos usuários"
+					},
+					"response": []
+				},
+				{
+					"name": "Users - Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "    {\n        \"name\": \"Peter Parker\",\n        \"email\": \"peter@marvel.com\",\n        \"gender\": \"Male\",\n        \"cpf\": \"111.111.111-11\"\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/users",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Users - Replace",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "    {\n        \"name\": \"Peter Parker\",\n        \"email\": \"peter1@marvel.com\",\n        \"gender\": \"Male\",\n        \"cpf\": \"111.111.111-11\",\n        \"password\": \"123456\"\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/users/5ec964785bc89c255897fdde",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"users",
+								"5ec964785bc89c255897fdde"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Users - Update (Partial)",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "    {\n        \"name\": \"Peter Parker changed\"\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/users/5ec964785bc89c255897fdde",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"users",
+								"5ec964785bc89c255897fdde"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Users - Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/merge+json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Teste2SSSSS111113215\",\n    \"email\": \"fffff@ffff.com.br\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/users/5ec964785bc89c255897fdde",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"users",
+								"5ec964785bc89c255897fdde"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Restaurants",
+			"item": [
+				{
+					"name": "Restaurants - List All",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/restaurants",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"restaurants"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Restaurants - List With Query Params",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/restaurants?name=Dona",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"restaurants"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "Dona"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Restaurants - Create With Menu",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"Dona Maura\",\n\t\"menu\": [\n\t\t{ \"name\": \"Prato do dia 001\", \"price\": 19.9 },\n\t\t{ \"name\": \"Prato do dia 002\", \"price\": 22.5 }\n\t]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/restaurants",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"restaurants"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Restaurants - Create Without Menu",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"Dona Maura2\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/restaurants",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"restaurants"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Restaurants - Get Menu",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/restaurants/5ec98bea600f004f077f9da4/menu",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"restaurants",
+								"5ec98bea600f004f077f9da4",
+								"menu"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Restaurants - Replace Menu",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n        \"name\": \"Escalope de mignon\",\n        \"price\": 39.9\n    },\n    {\n        \"name\": \"Salmão grelhado com legumes na manteiga\",\n        \"price\": 45.9\n    }\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/restaurants/5ec9790995379b3d99252ee4/menu",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"restaurants",
+								"5ec9790995379b3d99252ee4",
+								"menu"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Restaurants - Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/restaurants/5ec98564cceaf6499fad40b4",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"restaurants",
+								"5ec98564cceaf6499fad40b4"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
