@@ -1,4 +1,6 @@
-import restify, { Response, Next } from 'restify';
+import restify, { Request, Response, Next } from 'restify';
+import errors from 'restify-errors';
+import mongoose from 'mongoose';
 import { NotFoundError } from 'restify-errors'
 import { EventEmitter } from 'events';
 
@@ -15,6 +17,27 @@ export default abstract class Route extends EventEmitter {
                 throw new NotFoundError('Documento não encontrado');
             }
             return next();
+        }
+    }
+
+    renderAll(response: Response, next: Next) {
+        return (documents: any[]) => {
+            if (documents) {
+                documents.forEach(document => {
+                    this.emit('beforeRender', document);
+                });
+                response.json(documents)
+            } else {
+                response.json([]);
+            }
+        }
+    }
+
+    validateId(request: Request, response: Response, next: Next) {
+        if (!mongoose.Types.ObjectId.isValid(request.params.id)) {
+            next(new errors.NotFoundError('Documento não encontrado'));
+        } else {
+            next();
         }
     }
 

@@ -29,8 +29,8 @@ class UserRoutes extends Route {
         this.findAll(application);
         this.load(application);
         this.create(application);
+        this.replace(application);
         this.update(application);
-        this.partialUpdate(application);
         this.delete(application);
     }
 
@@ -41,7 +41,7 @@ class UserRoutes extends Route {
     findAll(application: restify.Server): void {
         application.get(BASE_RESOURCE, (req: Request, res: Response, next: Next) => {
             this.userService.find()
-                .then(this.render(res, next))
+                .then(this.renderAll(res, next))
                 .catch(next);
         });
     }
@@ -51,11 +51,16 @@ class UserRoutes extends Route {
      * @param application 
      */
     load(application: restify.Server): void {
-        application.get(`${BASE_RESOURCE}/:id`, (req: Request, res: Response, next: Next) => {
-            this.userService.findById(req.params.id)
-                .then(this.render(res, next))
-                .catch(next);
-        });
+        application.get(`${BASE_RESOURCE}/:id`, 
+        [
+            this.validateId,
+            (req: Request, res: Response, next: Next) => {
+                this.userService.findById(req.params.id)
+                    .then(this.render(res, next))
+                    .catch(next);
+            }
+        ]
+        );
     }
 
     /**
@@ -75,24 +80,34 @@ class UserRoutes extends Route {
      * Update full resource
      * @param application 
      */
-    update(application: restify.Server): void {
-        application.put(`${BASE_RESOURCE}/:id`, (req: Request, res: Response, next: Next) => {
-            this.userService.update(req.params.id, req.body)
-                .then(this.render(res, next))
-                .catch(next);            
-        });
+    replace(application: restify.Server): void {
+        application.put(`${BASE_RESOURCE}/:id`, 
+            [
+                this.validateId,
+                (req: Request, res: Response, next: Next) => {
+                    this.userService.update(req.params.id, req.body)
+                        .then(this.render(res, next))
+                        .catch(next);            
+                }
+            ]
+        );
     }
 
     /**
      * Update parcial resource
      * @param application 
      */
-    partialUpdate(application: restify.Server): void {
-        application.patch(`${BASE_RESOURCE}/:id`, (req: Request, res: Response, next: Next) => {
-            this.userService.update(req.params.id, req.body, false)
-                .then(this.render(res, next))
-                .catch(next);
-        });
+    update(application: restify.Server): void {
+        application.patch(`${BASE_RESOURCE}/:id`, 
+            [
+                this.validateId,
+                (req: Request, res: Response, next: Next) => {
+                    this.userService.update(req.params.id, req.body, false)
+                        .then(this.render(res, next))
+                        .catch(next);
+                }
+            ]
+        );
     }
 
     /**
@@ -100,19 +115,24 @@ class UserRoutes extends Route {
      * @param application 
      */
     delete(application: restify.Server): void {
-        application.del(`${BASE_RESOURCE}/:id`, (req: Request, res: Response, next: Next) => {
-            this.userService.delete(req.params.id)
-                .then(user => {
-                    if(user) {
-                        res.status(200);
-                        res.json(user);
-                    } else {
-                        throw new NotFoundError('Documento não encontrado');
-                    }
-                    return next();
-                })
-                .catch(next);
-        })
+        application.del(`${BASE_RESOURCE}/:id`, 
+            [
+                this.validateId,
+                (req: Request, res: Response, next: Next) => {
+                    this.userService.delete(req.params.id)
+                        .then(user => {
+                            if(user) {
+                                res.status(200);
+                                res.json(user);
+                            } else {
+                                throw new NotFoundError('Documento não encontrado');
+                            }
+                            return next();
+                        })
+                        .catch(next);
+                }
+            ]
+        )
     }
 }
 
