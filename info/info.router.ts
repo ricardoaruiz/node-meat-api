@@ -19,4 +19,4 @@ class InfoRoutes extends Route {
     }
 }
 
-export const infoRoutes = new InfoRoutes();
+export default new InfoRoutes();

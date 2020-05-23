@@ -136,4 +136,4 @@ class UserRoutes extends Route {
     }
 }
 
-export const usersRoutes = new UserRoutes();
+export default new UserRoutes();

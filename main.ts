@@ -2,10 +2,11 @@ import Server from './server/server';
 import Route from './common/route';
 
 // Routes
-import { infoRoutes } from './info/info.router';
-import { usersRoutes } from './users/users.router';
+import infoRoutes from './info/info.router';
+import usersRoutes from './users/users.router';
+import restaurantsRoutes from './restaurants/restaurants.router';
 
-const routes: Route[] = [infoRoutes, usersRoutes];
+const routes: Route[] = [infoRoutes, usersRoutes, restaurantsRoutes];
 const server = new Server(routes);
 
 server.bootstrap()
