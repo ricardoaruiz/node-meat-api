@@ -1,5 +1,5 @@
-import { UnprocessableEntityError } from 'restify-errors';
-import RestaurantModel, { RestaurantDocument } from "./restaurants.model";
+import { UnprocessableEntityError, NotFoundError } from 'restify-errors';
+import RestaurantModel, { RestaurantDocument, MenuItemDocument } from "./restaurants.model";
 
 class RestaurantService {
 
@@ -31,7 +31,7 @@ class RestaurantService {
      */    
     public async create(restaurant: RestaurantDocument): Promise<RestaurantDocument> {
 
-        const foundRestaurant = await RestaurantModel.find({ name: restaurant.name });
+        const foundRestaurant = await RestaurantModel.findOne({ name: restaurant.name });
         if (foundRestaurant)
             throw new UnprocessableEntityError('Já existe um restaurante com o nome informado');
 
@@ -62,6 +62,37 @@ class RestaurantService {
     public delete(id: string): Promise<RestaurantDocument | null> {
         return RestaurantModel.findByIdAndDelete(id)
             .then(doc => doc);
+    }
+
+    /**
+     * Carrega o menu de um restaurante
+     * @param idRestaurant string
+     */
+    public loadMenu(idRestaurant: string): Promise<MenuItemDocument[] | null> {
+        return RestaurantModel.findById(idRestaurant, { menu: true })
+            .then(docs => {
+                if (!docs)
+                    throw new NotFoundError('Restaurante não encontrado');
+                return docs.menu;
+            })
+    }
+
+    /**
+     * Sobrescreve o menu de um restaurante
+     * @param idRestaurant string
+     * @param menu MenuItemDocument[]
+     */
+    public async updateMenu(idRestaurant: string, menu: MenuItemDocument[]): Promise<MenuItemDocument[] | null> {
+        
+        const restaurant = await RestaurantModel.findById(idRestaurant);
+
+        if (!restaurant)
+            throw new NotFoundError('Restaurante não encontrado');
+
+        restaurant.menu = menu;
+        
+        return restaurant.save()
+            .then(restaurant => restaurant.menu);
     }
 
     private buildFilter(filter?: RestaurantFilter): RestaurantFilter {
