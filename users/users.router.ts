@@ -2,7 +2,7 @@ import restify, { Request, Response, Next } from 'restify';
 import { NotFoundError } from 'restify-errors';
 
 import Route from '../common/route';
-import UserService from './user.service';
+import UserService from './users.service';
 
 const BASE_RESOURCE = "/users";
 
