@@ -3,9 +3,12 @@ import { validateCPF } from '../common/validators'
 import crypto from '../common/crypto';
 
 export interface UserDocument extends mongoose.Document {
+    id?: string,
     name: string,
     email: string,
-    password: string
+    password: string,
+    gender?: string,
+    cpf?: string,
 }
 
 // Create schema
@@ -24,7 +27,7 @@ const userSchema = new mongoose.Schema({
     },
     password: { 
         type: String,
-        select: false,
+        select: false, //indica que não será exibido nas consultas
         required: true,
     },
     gender: {

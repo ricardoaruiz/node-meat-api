@@ -1,4 +1,4 @@
-import { DocumentQuery, Query } from 'mongoose';
+import { UnprocessableEntityError } from 'restify-errors';
 import User, { UserDocument } from './users.model';
 
 export default class UserService {
@@ -6,23 +6,29 @@ export default class UserService {
     /**
      * Faz a busca dos usuários
      */
-    find(): DocumentQuery<UserDocument[], UserDocument, {}> {
-        return User.find()
+    find(): Promise<UserDocument[]> {
+        return User.find().then(docs => docs)
     }
 
     /**
      * Busca um usuário pelo id
      * @param id 
      */
-    findById(id: number): DocumentQuery<UserDocument | null, UserDocument, {}> {
-        return User.findById(id);
+    findById(id: number): Promise<UserDocument | null> {
+        return User.findById(id).then(doc => doc);
     }
 
     /**
      * Cria um novo usuário na base de dados.
+     * Caso já o email informado esteja em uso retorna HTTP Code 422 informando a inconsistência
      * @param user 
      */
-    create(user: UserDocument): Promise<UserDocument> {
+    async create(user: UserDocument): Promise<UserDocument> {
+        const foundUser = await User.findOne({ email: user.email });
+
+        if (foundUser) 
+            throw new UnprocessableEntityError('Email informado já está em uso');
+
         return User.create(new User(user));
     }
 
@@ -33,17 +39,22 @@ export default class UserService {
      * @param overwrite => se false os campos não informados serão passados para null 
      *                     se true os campos não informados não serão alterados
      */
-    update(id: number, user: UserDocument, overwrite = true): Query<any> {
-        const options = { runValidators: true, overwrite };
-        return User.findByIdAndUpdate(id, user, options);
+    async update(id: number, user: UserDocument, overwrite = true): Promise<UserDocument | null> {
+        const foundUser = await User.findOne({ _id: { '$ne': id }, email: user.email, })
+
+        if (foundUser) 
+            throw new UnprocessableEntityError('Email informado já está em uso');
+
+        const options = { runValidators: true, new: true, overwrite };
+        return User.findByIdAndUpdate(id, user, options).then(doc => doc);
     }
 
     /**
      * Remove um usuário
      * @param id 
      */
-    delete(id: number): DocumentQuery<UserDocument | null, UserDocument, {}> {
-        return User.findByIdAndRemove(id);
+    delete(id: number): Promise<UserDocument | null> {
+        return User.findByIdAndRemove(id).then(doc => doc);
     }
 
 }
