@@ -157,13 +157,19 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "localhost:3000/restaurants",
+							"raw": "localhost:3000/restaurants?showMenu=true",
 							"host": [
 								"localhost"
 							],
 							"port": "3000",
 							"path": [
 								"restaurants"
+							],
+							"query": [
+								{
+									"key": "showMenu",
+									"value": "true"
+								}
 							]
 						}
 					},
@@ -248,6 +254,62 @@
 					"response": []
 				},
 				{
+					"name": "Restaurants - Replace Restaurant Copy",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"Le Velmont\",\n\t\"menu\": [\n\t    {\n\t        \"name\": \"Escalope de mignon\",\n\t        \"price\": 132.9\n\t    },\n\t    {\n\t        \"name\": \"Salmão grelhado com legumes na manteiga\",\n\t        \"price\": 142.9\n\t    }\n\t]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/restaurants/5ec9790995379b3d99252ee4",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"restaurants",
+								"5ec9790995379b3d99252ee4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Restaurants - Update",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"Le Velmont1111\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/restaurants/5ec9790995379b3d99252ee4",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"restaurants",
+								"5ec9790995379b3d99252ee4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Restaurants - Get Menu",
 					"request": {
 						"method": "GET",
@@ -274,7 +336,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "[\n    {\n        \"name\": \"Escalope de mignon\",\n        \"price\": 39.9\n    },\n    {\n        \"name\": \"Salmão grelhado com legumes na manteiga\",\n        \"price\": 45.9\n    }\n]",
+							"raw": "[\n    {\n        \"name\": \"Escalope de mignon\",\n        \"price\": 32.9\n    },\n    {\n        \"name\": \"Salmão grelhado com legumes na manteiga\",\n        \"price\": 42.9\n    }\n]",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -310,6 +372,150 @@
 							"path": [
 								"restaurants",
 								"5ec98564cceaf6499fad40b4"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Reviews",
+			"item": [
+				{
+					"name": "Reviews - List All",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/reviews",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"reviews"
+							],
+							"query": [
+								{
+									"key": "complete",
+									"value": "true",
+									"disabled": true
+								},
+								{
+									"key": "restaurant",
+									"value": "5ec9790995379b3d99252ee4",
+									"disabled": true
+								},
+								{
+									"key": "user",
+									"value": "5ec6b5704164af581ebd2955",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Review - Load",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/reviews/5ecaa749d91c111bdc065acb",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"reviews",
+								"5ecaa749d91c111bdc065acb"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Review - Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"date\": \"2020-05-25T23:20:10\",\n\t\"rating\": 4,\n\t\"comments\": \"Restaurante nota 10\",\n\t\"restaurant\": \"5ec9790995379b3d99252ee4\",\n\t\"user\": \"5ec6b5704164af581ebd2955\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/reviews",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"reviews"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Restaurants - Replace Restaurant",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n   \"name\": \"Le Velmont\",\n\t\"menu\": [\n\t    {\n\t        \"name\": \"Escalope de mignon\",\n\t        \"price\": 32.9\n\t    },\n\t    {\n\t        \"name\": \"Salmão grelhado com legumes na manteiga\",\n\t        \"price\": 42.9\n\t    }\n\t]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/restaurants/5ec9790995379b3d99252ee4",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"restaurants",
+								"5ec9790995379b3d99252ee4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Restaurants - Replace Menu",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n        \"name\": \"Escalope de mignon\",\n        \"price\": 32.9\n    },\n    {\n        \"name\": \"Salmão grelhado com legumes na manteiga\",\n        \"price\": 42.9\n    }\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/restaurants/5ec9790995379b3d99252ee4/menu",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"restaurants",
+								"5ec9790995379b3d99252ee4",
+								"menu"
 							]
 						}
 					},

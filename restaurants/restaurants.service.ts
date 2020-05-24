@@ -8,9 +8,13 @@ class RestaurantService {
      * @param filter RestaurantFilter Filtro
      * @returns Promise<RestaurantDocument[]> com a lista de recursos encontrados
      */
-    public find(filter?: RestaurantFilter): Promise<RestaurantDocument[]> {
-        return RestaurantModel.find(this.buildFilter(filter))
+    public find(filter?: RestaurantFilter, showMenu: boolean = false): Promise<RestaurantDocument[]> {
+
+        const projection = showMenu ? { name : true, menu : true } : { name: true}
+
+        return RestaurantModel.find(this.buildFilter(filter), projection)
             .then(docs => docs);
+
     }
 
     /**

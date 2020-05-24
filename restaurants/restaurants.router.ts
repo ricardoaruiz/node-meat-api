@@ -22,7 +22,7 @@ class RestaurantsRoutes extends Route {
     private find(application: Server): void {
 
         const process = (request: Request, response: Response, next: Next) => {
-            restaurantService.find(request.query)
+            restaurantService.find(request.query, request.query.showMenu)
                 .then(this.renderAll(response, next))
                 .catch(next);
         };

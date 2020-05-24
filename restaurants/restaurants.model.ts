@@ -24,7 +24,8 @@ const menuSchema = new Schema({
 const restaurantSchema = new Schema({
     name: {
         type: String,
-        required: true
+        required: true,
+        minlength: 5
     },
     menu: {
         type: [menuSchema],
