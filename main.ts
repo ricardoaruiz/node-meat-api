@@ -5,8 +5,9 @@ import Route from './common/route';
 import infoRoutes from './info/info.router';
 import usersRoutes from './users/users.router';
 import restaurantsRoutes from './restaurants/restaurants.router';
+import reviewRoutes from './reviews/reviews.router';
 
-const routes: Route[] = [infoRoutes, usersRoutes, restaurantsRoutes];
+const routes: Route[] = [infoRoutes, usersRoutes, restaurantsRoutes, reviewRoutes];
 const server = new Server(routes);
 
 server.bootstrap()

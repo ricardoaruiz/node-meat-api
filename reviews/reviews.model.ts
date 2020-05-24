@@ -2,6 +2,11 @@ import mongoose, { Schema, Document } from 'mongoose';
 import { UserDocument } from './../users/users.model';
 import { RestaurantDocument } from './../restaurants/restaurants.model';
 
+export interface ReviewFilter {
+    restaurant?: mongoose.Types.ObjectId | Object;
+    user?: mongoose.Types.ObjectId | Object;
+}
+
 export interface ReviewDocument extends Document {
     date: Date;
     rating: number;
@@ -26,12 +31,12 @@ const reviewSchema = new Schema({
     },
     restaurant: {
         type: Schema.Types.ObjectId,
-        ref: 'Restaurant',
+        ref: 'Restaurant', // Cria uma referência para o documento Restaurant para que o mongoose seja capaz de resolver com o método populate
         required: true
     },
     user: {
         type: Schema.Types.ObjectId,
-        ref: 'User',
+        ref: 'User', // Cria uma referência para o documento User para que o mongoose seja capaz de resolver com o método populate
         required: true
     }
 });
