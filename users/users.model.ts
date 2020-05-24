@@ -87,6 +87,4 @@ userSchema.pre('update', updateMiddleware);
 userSchema.pre('findOneAndUpdate', updateMiddleware);
 
 // Create and export model
-const User = mongoose.model<UserDocument>('User', userSchema);
-
-export default User;
+export default mongoose.model<UserDocument>('User', userSchema);
