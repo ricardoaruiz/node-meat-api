@@ -8,7 +8,7 @@ export default abstract class Route extends EventEmitter {
     
     abstract applyRoutes(application: restify.Server): void;
 
-    render(response: Response, next: Next) {
+    render(response: Response, next: Next, continueToNextStep: boolean = true) {
         return (document: any) => {
             if (document) {
                 this.emit('beforeRender', document);
@@ -16,11 +16,11 @@ export default abstract class Route extends EventEmitter {
             } else {
                 throw new NotFoundError('Documento não encontrado');
             }
-            return next();
+            return next(continueToNextStep);
         }
     }
 
-    renderAll(response: Response, next: Next) {
+    renderAll(response: Response, next: Next, continueToNextStep: boolean = true) {
         return (documents: any[]) => {
             if (documents) {
                 documents.forEach(document => {
@@ -30,7 +30,7 @@ export default abstract class Route extends EventEmitter {
             } else {
                 response.json([]);
             }
-            return next();
+            return next(continueToNextStep);
         }
     }
 

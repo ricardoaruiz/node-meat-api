@@ -40,20 +40,43 @@ class UserRoutes extends Route {
      */
     findAll(application: restify.Server): void {
 
+        /**
+         * Exemplo para versionamento de endpoints aqui é a versão 1.0.0
+         * @param req 
+         * @param res 
+         * @param next 
+         */
         const processFindAll100 = (req: Request, res: Response, next: Next) => {
             this.userService.find()
                 .then(this.renderAll(res, next))
                 .catch(next);
         };
 
+        /**
+         * Exemplo para versionamento de endpoints aqui é a versão 2.0.0
+         * @param req 
+         * @param res 
+         * @param next 
+         */
         const processFindAll200 = (req: Request, res: Response, next: Next) => {
-            this.userService.find(req.query)
-                .then(this.renderAll(res, next))
-                .catch(next);
+            if (req.query.email) {
+                this.userService.findByEmail(req.query.email)
+                    .then(user => user ? [user]: [])
+                    .then(this.renderAll(res, next, false))
+                    .catch(next);
+            } else {
+                next();
+            }
         };
 
+        // Versionamento de endpoints controlado pelo header Accept-Version
+        // Exemplo de utilização do header na chamada do endpoint
+        // Accept-Version = 1.0.0
+        // Accept-Version = 2.0.0
+        // Accept-Version > 1.0.0
+        // Caso não seja passada a versão no header a versão mais recente será escolhida pelo restify (nesse caso a 2.0.0)
         application.get({ path: BASE_RESOURCE, version: '1.0.0'}, processFindAll100);
-        application.get({ path: BASE_RESOURCE, version: '2.0.0'}, processFindAll200);
+        application.get({ path: BASE_RESOURCE, version: '2.0.0'}, [processFindAll200, processFindAll100]);
     }
 
     /**
