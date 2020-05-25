@@ -47,18 +47,13 @@ class UserRoutes extends Route {
         };
 
         const processFindAll200 = (req: Request, res: Response, next: Next) => {
-            if(req.query.email) {
-                this.userService.find(req.query)
-                    .then(this.renderAll(res, next))
-                    .catch(next);
-            } else {
-                next();
-            }
-
+            this.userService.find(req.query)
+                .then(this.renderAll(res, next))
+                .catch(next);
         };
 
         application.get({ path: BASE_RESOURCE, version: '1.0.0'}, processFindAll100);
-        application.get({ path: BASE_RESOURCE, version: '2.0.0'}, [processFindAll200, processFindAll100]);
+        application.get({ path: BASE_RESOURCE, version: '2.0.0'}, processFindAll200);
     }
 
     /**
@@ -66,16 +61,14 @@ class UserRoutes extends Route {
      * @param application 
      */
     load(application: restify.Server): void {
-        application.get(`${BASE_RESOURCE}/:id`, 
-        [
-            this.validateId,
-            (req: Request, res: Response, next: Next) => {
-                this.userService.findById(req.params.id)
-                    .then(this.render(res, next))
-                    .catch(next);
-            }
-        ]
-        );
+
+        const processLoad100 = (req: Request, res: Response, next: Next) => {
+            this.userService.findById(req.params.id)
+                .then(this.render(res, next))
+                .catch(next);
+        };
+
+        application.get(`${BASE_RESOURCE}/:id`, [this.validateId, processLoad100]);
     }
 
     /**
@@ -83,12 +76,15 @@ class UserRoutes extends Route {
      * @param application 
      */
     create(application: restify.Server): void {
-        application.post(BASE_RESOURCE, (req: Request, res: Response, next: Next) => {
+
+        const processCreate100 = (req: Request, res: Response, next: Next) => {
             this.userService.create(req.body)
                 .then(this.render(res, next))
                 .catch(next);
 
-        });
+        };
+
+        application.post(BASE_RESOURCE, processCreate100);
     }
 
     /**
@@ -96,16 +92,14 @@ class UserRoutes extends Route {
      * @param application 
      */
     replace(application: restify.Server): void {
-        application.put(`${BASE_RESOURCE}/:id`, 
-            [
-                this.validateId,
-                (req: Request, res: Response, next: Next) => {
-                    this.userService.update(req.params.id, req.body)
-                        .then(this.render(res, next))
-                        .catch(next);            
-                }
-            ]
-        );
+
+        const processReplace100 = (req: Request, res: Response, next: Next) => {
+            this.userService.update(req.params.id, req.body)
+                .then(this.render(res, next))
+                .catch(next);            
+        };
+
+        application.put(`${BASE_RESOURCE}/:id`, [this.validateId, processReplace100]);
     }
 
     /**
@@ -113,16 +107,14 @@ class UserRoutes extends Route {
      * @param application 
      */
     update(application: restify.Server): void {
-        application.patch(`${BASE_RESOURCE}/:id`, 
-            [
-                this.validateId,
-                (req: Request, res: Response, next: Next) => {
-                    this.userService.update(req.params.id, req.body, false)
-                        .then(this.render(res, next))
-                        .catch(next);
-                }
-            ]
-        );
+
+        const processUpdate100 = (req: Request, res: Response, next: Next) => {
+            this.userService.update(req.params.id, req.body, false)
+                .then(this.render(res, next))
+                .catch(next);
+        };
+
+        application.patch(`${BASE_RESOURCE}/:id`, [this.validateId, processUpdate100]);
     }
 
     /**
@@ -130,22 +122,25 @@ class UserRoutes extends Route {
      * @param application 
      */
     delete(application: restify.Server): void {
+
+        const processDelete100 = (req: Request, res: Response, next: Next) => {
+            this.userService.delete(req.params.id)
+                .then(user => {
+                    if(user) {
+                        res.status(200);
+                        res.json(user);
+                    } else {
+                        throw new NotFoundError('Documento não encontrado');
+                    }
+                    return next();
+                })
+                .catch(next);
+        }; 
+
         application.del(`${BASE_RESOURCE}/:id`, 
             [
                 this.validateId,
-                (req: Request, res: Response, next: Next) => {
-                    this.userService.delete(req.params.id)
-                        .then(user => {
-                            if(user) {
-                                res.status(200);
-                                res.json(user);
-                            } else {
-                                throw new NotFoundError('Documento não encontrado');
-                            }
-                            return next();
-                        })
-                        .catch(next);
-                }
+                processDelete100
             ]
         )
     }

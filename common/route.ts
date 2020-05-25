@@ -30,6 +30,7 @@ export default abstract class Route extends EventEmitter {
             } else {
                 response.json([]);
             }
+            return next();
         }
     }
 

@@ -8,7 +8,7 @@ export default class UserService {
      */
     find(filter?: UserFilter): Promise<UserDocument[]> {
         return User.find(this.buildUserFilter(filter))
-            .then(docs => docs)
+            .then(docs => docs);
     }
 
     /**
