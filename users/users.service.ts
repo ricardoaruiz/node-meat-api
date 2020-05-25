@@ -12,6 +12,15 @@ export default class UserService {
     }
 
     /**
+     * Retorna um usuário através de seu email
+     * @param email do usuário
+     */
+    findByEmail(email: string): Promise<UserDocument | null> {
+        return User.findByEmail(email)
+            .then(doc => doc);
+    }
+
+    /**
      * Busca um usuário pelo id
      * @param id 
      */

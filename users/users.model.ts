@@ -11,6 +11,10 @@ export interface UserDocument extends mongoose.Document {
     cpf?: string,
 }
 
+export interface UserModel extends mongoose.Model<UserDocument> {
+    findByEmail(email: string): Promise<UserDocument | null>;
+}
+
 // Create schema
 const userSchema = new mongoose.Schema({
     name: { 
@@ -44,6 +48,14 @@ const userSchema = new mongoose.Schema({
         }
     }
 });
+
+/**
+ * Método personalizado dentro do model
+ * Os métodos podem ser estáticos ou de instância
+ */
+userSchema.statics.findByEmail = function(email: string): Promise<UserDocument | null> {
+    return this.findOne({ email });
+}
 
 /**
  * Criptografa a senha do usuário
@@ -91,4 +103,4 @@ userSchema.pre('update', updateMiddleware);
 userSchema.pre('findOneAndUpdate', updateMiddleware);
 
 // Create and export model
-export default mongoose.model<UserDocument>('User', userSchema);
+export default mongoose.model<UserDocument, UserModel>('User', userSchema);
