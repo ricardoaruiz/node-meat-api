@@ -1,13 +1,14 @@
 import { UnprocessableEntityError } from 'restify-errors';
-import User, { UserDocument } from './users.model';
+import User, { UserDocument, UserFilter } from './users.model';
 
 export default class UserService {
 
     /**
      * Faz a busca dos usuários
      */
-    find(): Promise<UserDocument[]> {
-        return User.find().then(docs => docs)
+    find(filter?: UserFilter): Promise<UserDocument[]> {
+        return User.find(this.buildUserFilter(filter))
+            .then(docs => docs)
     }
 
     /**
@@ -55,6 +56,18 @@ export default class UserService {
      */
     delete(id: number): Promise<UserDocument | null> {
         return User.findByIdAndRemove(id).then(doc => doc);
+    }
+
+    private buildUserFilter(filter?: UserFilter): UserFilter {
+        const userFilter: UserFilter = {};
+
+        if (filter) {
+            if (filter.email) {
+                userFilter.email = { '$regex': filter.email, '$options': 'i' };
+            }
+        }
+
+        return userFilter;
     }
 
 }

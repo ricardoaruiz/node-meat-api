@@ -39,11 +39,26 @@ class UserRoutes extends Route {
      * @param application 
      */
     findAll(application: restify.Server): void {
-        application.get(BASE_RESOURCE, (req: Request, res: Response, next: Next) => {
+
+        const processFindAll100 = (req: Request, res: Response, next: Next) => {
             this.userService.find()
                 .then(this.renderAll(res, next))
                 .catch(next);
-        });
+        };
+
+        const processFindAll200 = (req: Request, res: Response, next: Next) => {
+            if(req.query.email) {
+                this.userService.find(req.query)
+                    .then(this.renderAll(res, next))
+                    .catch(next);
+            } else {
+                next();
+            }
+
+        };
+
+        application.get({ path: BASE_RESOURCE, version: '1.0.0'}, processFindAll100);
+        application.get({ path: BASE_RESOURCE, version: '2.0.0'}, [processFindAll200, processFindAll100]);
     }
 
     /**

@@ -81,6 +81,10 @@ const updateMiddleware = function (this: any, next: any) {
     }
 }
 
+export interface UserFilter {
+    email?: string | Object
+}
+
 // Mongoose middlewares.
 userSchema.pre('save', saveMiddleware);
 userSchema.pre('update', updateMiddleware);
